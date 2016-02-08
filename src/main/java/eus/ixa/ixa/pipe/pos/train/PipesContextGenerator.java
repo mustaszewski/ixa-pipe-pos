@@ -33,7 +33,7 @@ import opennlp.tools.util.StringList;
  * @author ragerri
  * @version 2014-07-08
  */
-public class BaselineContextGenerator implements POSContextGenerator {
+public class PipesContextGenerator implements POSContextGenerator {
 
   /**
    * The ending string.
@@ -82,7 +82,7 @@ public class BaselineContextGenerator implements POSContextGenerator {
    * @param aDict
    *          the dictionary
    */
-  public BaselineContextGenerator(final Dictionary aDict) {
+  public PipesContextGenerator(final Dictionary aDict) {
     this(0, aDict);
   }
 
@@ -94,7 +94,7 @@ public class BaselineContextGenerator implements POSContextGenerator {
    * @param aDict
    *          the dictionary
    */
-  public BaselineContextGenerator(final int cacheSize, final Dictionary aDict) {
+  public PipesContextGenerator(final int cacheSize, final Dictionary aDict) {
     this.dict = aDict;
     this.dictGram = new String[1];
     if (cacheSize > 0) {
@@ -178,11 +178,11 @@ public class BaselineContextGenerator implements POSContextGenerator {
 
     if (index - 1 >= 0) {
       prev = tokens[index - 1].toString();
-      //tagprev = tags[index - 1];
+      tagprev = tags[index - 1];
 
       if (index - 2 >= 0) {
         prevprev = tokens[index - 2].toString();
-        //tagprevprev = tags[index - 2];
+        tagprevprev = tags[index - 2];
       } else {
         prevprev = this.SB; // Sentence Beginning
       }

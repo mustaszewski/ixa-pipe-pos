@@ -178,14 +178,14 @@ public class BaselineContextGenerator implements POSContextGenerator {
 
     if (index - 1 >= 0) {
       prev = tokens[index - 1].toString();
-      if (tags[index -1] != null) {
+      /*if (tags[index -1] != null) {
     	tagprev = tags[index - 1];  
-      }
+      }*/
       if (index - 2 >= 0) {
         prevprev = tokens[index - 2].toString();
-        if (tags[index - 2] != null) {
+        /*if (tags[index - 2] != null) {
           tagprevprev = tags[index - 2];
-        }
+        }*/
       } else {
         prevprev = this.SB; // Sentence Beginning
       }

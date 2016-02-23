@@ -178,11 +178,11 @@ public class BaselineContextGenerator implements POSContextGenerator {
 
     if (index - 1 >= 0) {
       prev = tokens[index - 1].toString();
-      tagprev = tags[index - 1];
+      // tagprev = tags[index - 1]; removed for CRF Test
 
       if (index - 2 >= 0) {
         prevprev = tokens[index - 2].toString();
-        tagprevprev = tags[index - 2];
+        // tagprevprev = tags[index - 2];
       } else {
         prevprev = this.SB; // Sentence Beginning
       }

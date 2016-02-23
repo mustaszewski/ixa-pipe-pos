@@ -119,11 +119,16 @@ public final class InputOutputUtils {
           System.err.println("Error closing the input stream");
         }
       }
-
+      /*
       if (!TrainerFactory.isValid(params.getSettings())) {
         throw new TerminateToolException(1, "Training parameters file '"
             + paramFile + "' is invalid!");
-      }
+      }*/
+      
+      if (!TrainerFactory.isValid(params.getSettings()) && !(params.algorithm().equals("MaxentMM") || params.algorithm().equals("MEMM") || params.algorithm().equals("CRF"))) {
+          throw new TerminateToolException(1, "Training parameters file '"
+              + paramFile + "' is invalid!");
+        }
     }
 
     return params;

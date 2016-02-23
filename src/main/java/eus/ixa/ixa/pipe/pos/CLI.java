@@ -16,8 +16,6 @@
 
 package eus.ixa.ixa.pipe.pos;
 
-import ixa.kaflib.KAFDocument;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -31,6 +29,23 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
+import org.jdom2.JDOMException;
+
+import com.google.common.io.Files;
+
+import eus.ixa.ixa.pipe.lemma.LemmatizerModel;
+import eus.ixa.ixa.pipe.lemma.eval.LemmaEvaluate;
+import eus.ixa.ixa.pipe.lemma.train.LemmatizerFixedTrainer;
+import eus.ixa.ixa.pipe.lemma.train.LemmatizerTrainer;
+import eus.ixa.ixa.pipe.pos.eval.Evaluate;
+import eus.ixa.ixa.pipe.pos.eval.POSCrossValidator;
+import eus.ixa.ixa.pipe.pos.eval.POSEvaluate;
+import eus.ixa.ixa.pipe.pos.train.FixedCRFTrainer;
+import eus.ixa.ixa.pipe.pos.train.FixedTrainer;
+import eus.ixa.ixa.pipe.pos.train.Flags;
+import eus.ixa.ixa.pipe.pos.train.InputOutputUtils;
+import eus.ixa.ixa.pipe.pos.train.TaggerTrainer;
+import ixa.kaflib.KAFDocument;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -41,22 +56,6 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 import opennlp.tools.cmdline.CmdLineUtil;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.util.TrainingParameters;
-
-import org.jdom2.JDOMException;
-
-import com.google.common.io.Files;
-
-import eus.ixa.ixa.pipe.lemma.LemmatizerModel;
-import eus.ixa.ixa.pipe.lemma.eval.LemmaEvaluate;
-import eus.ixa.ixa.pipe.lemma.train.LemmatizerFixedTrainer;
-import eus.ixa.ixa.pipe.lemma.train.LemmatizerTrainer;
-import eus.ixa.ixa.pipe.pos.eval.POSCrossValidator;
-import eus.ixa.ixa.pipe.pos.eval.Evaluate;
-import eus.ixa.ixa.pipe.pos.eval.POSEvaluate;
-import eus.ixa.ixa.pipe.pos.train.FixedTrainer;
-import eus.ixa.ixa.pipe.pos.train.Flags;
-import eus.ixa.ixa.pipe.pos.train.InputOutputUtils;
-import eus.ixa.ixa.pipe.pos.train.TaggerTrainer;
 
 /**
  * Main class of ixa-pipe-pos, the pos tagger of ixa-pipes
@@ -293,6 +292,7 @@ public class CLI {
     final TrainingParameters params = InputOutputUtils
         .loadTrainingParameters(paramFile);
     String outModel = null;
+    TaggerTrainer posTaggerTrainer = null;
     if (params.getSettings().get("OutputModel") == null
         || params.getSettings().get("OutputModel").length() == 0) {
       outModel = Files.getNameWithoutExtension(paramFile) + ".bin";
@@ -300,9 +300,20 @@ public class CLI {
     } else {
       outModel = Flags.getModel(params);
     }
+    
+    if (params.algorithm().equals("CRF")) {
+        posTaggerTrainer = new FixedCRFTrainer(params);
+     } /*
+     else if (params.algorithm().equals("MEMM")) {
+     	posTaggerTrainer = new FixedMEMMTrainer(params);
+     } */
+     else {
+       posTaggerTrainer = new FixedTrainer(params);
+     }
+    
     String component = Flags.getComponent(params);
     if (component.equalsIgnoreCase("POS")) {
-      final TaggerTrainer posTaggerTrainer = new FixedTrainer(params);
+      //final TaggerTrainer posTaggerTrainer = new FixedTrainer(params);
       final POSModel trainedModel = posTaggerTrainer.train(params);
       CmdLineUtil.writeModel("ixa-pipe-pos", new File(outModel), trainedModel);
     } else if (component.equalsIgnoreCase("Lemma")) {

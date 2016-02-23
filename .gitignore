@@ -16,3 +16,8 @@ octave-core
 *.checkstyle
 trainParams.txt
 trainMaxent.txt
+*.properties
+*.properties~
+*.tar.gz
+*.txt
+*~

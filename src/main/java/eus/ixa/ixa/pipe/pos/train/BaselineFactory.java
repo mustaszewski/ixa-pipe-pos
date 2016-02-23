@@ -46,7 +46,7 @@ public class BaselineFactory extends POSTaggerFactory {
       final TagDictionary posDictionary) {
     super(ngramDictionary, posDictionary);
   }
-
+  // here new constructor with cluster as parameter --> this in the context generator - first try with one, e.g. 
   /*
    * (non-Javadoc)
    * 

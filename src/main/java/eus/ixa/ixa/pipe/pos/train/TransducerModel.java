@@ -108,7 +108,7 @@ public class TransducerModel<T> implements SequenceClassificationModel<T>, Seria
 
       
 
-    
+    /*
     // START DEBUG ONLY
   	try {
   		FileWriter writer1 = new FileWriter("TransducerModel.txt", true); ///////////////////////
@@ -132,19 +132,19 @@ public class TransducerModel<T> implements SequenceClassificationModel<T>, Seria
   		writer1.write("  dataAlphSize\t" + dataAlphabet.size() +"\n");
   		writer1.write("  numSequences\t" + numSequences +"\n");
   		writer1.write("  sequenceSize\t" + sequence.length +"\n\n");
-  		/*if (priorDecisions != null) {
+  		// /*if (priorDecisions != null) {
   			writer1.write(priorDecisions.toString() + " = length " + priorDecisions.length + "\n");
   			for (Object z : priorDecisions) {
   				writer1.write("\t" + z.toString() + "\t");
   			}
   			writer1.write("\n");
-  		}*/
+  		}
   		writer1.close();
   	} catch (IOException e) {
   		e.printStackTrace();
       	}
       // END DEBUG ONLY   
-      
+      */
       
       List<Integer> malletFeatureList = new ArrayList<>(features.length);
       
@@ -174,6 +174,7 @@ public class TransducerModel<T> implements SequenceClassificationModel<T>, Seria
 
       answers = lattice.bestOutputSequences(numSequences).toArray(new Sequence[0]);
     }
+    /*
     // START DEBUG ONLY
 	try {
 		FileWriter writer2 = new FileWriter("TransducerModel2.txt", true); /////////////////////
@@ -187,7 +188,8 @@ public class TransducerModel<T> implements SequenceClassificationModel<T>, Seria
 	} catch (IOException e) {
 		e.printStackTrace();
     	}
-    // END DEBUG ONLY      
+    // END DEBUG ONLY  
+     */
     opennlp.tools.util.Sequence[] outcomeSequences = new opennlp.tools.util.Sequence[answers.length];
     
     for (int i = 0; i < answers.length; i++) {
@@ -198,6 +200,7 @@ public class TransducerModel<T> implements SequenceClassificationModel<T>, Seria
       for (int j = 0; j < seq.size(); j++) {
         outcomes.add(seq.get(j).toString());
       }
+    /*
     // START DEBUG ONLY
 	try {
 		FileWriter writer3 = new FileWriter("TransducerModel3.txt", true);
@@ -215,7 +218,7 @@ public class TransducerModel<T> implements SequenceClassificationModel<T>, Seria
 		e.printStackTrace();
     	}
     // END DEBUG ONLY      
-	
+	*/
       outcomeSequences[i] = new opennlp.tools.util.Sequence(outcomes);
     }
     

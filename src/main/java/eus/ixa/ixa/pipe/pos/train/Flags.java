@@ -26,6 +26,7 @@ public class Flags {
   public static final String DEFAULT_EVALUATE_MODEL = "off";
   public static final String DEFAULT_FEATURESET_FLAG = "Baseline";
   public static final String DEFAULT_DICT_PATH = "off";
+  public static final String DEFAULT_CLARK_PATH = "off";
   public static final int DEFAULT_DICT_CUTOFF = -1;
   public static final String DEFAULT_EVAL_FORMAT = "opennlp";
   public static final String DEFAULT_OUTPUT_FORMAT = "naf";
@@ -118,6 +119,17 @@ public class Flags {
     }
     return dictionaryFlag;
   }
+  
+  // get Path of Clark Cluster File
+  public static String getClarkFeatures(final TrainingParameters params) {
+	    String clarkFlag = null;
+	    if (params.getSettings().get("ClarkClusterFeatures") != null) {
+	      clarkFlag = params.getSettings().get("ClarkClusterFeatures");
+	    } else {
+	      clarkFlag = Flags.DEFAULT_CLARK_PATH;
+	    }
+	    return clarkFlag;
+	  }
 
   public static Integer getAutoDictFeatures(final TrainingParameters params) {
     String dictionaryFlag = null;

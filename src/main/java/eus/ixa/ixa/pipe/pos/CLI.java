@@ -300,6 +300,15 @@ public class CLI {
     } else {
       outModel = Flags.getModel(params);
     }
+    /*
+    /// START DEBUG ONLY
+    System.out.println("##################################################");
+    System.out.println(params.getSettings().toString()+"\n");
+    String clarkPath = params.getSettings().get("ClarkClusterFeatures");
+    System.out.println("clarkPath = "+ clarkPath);
+    System.out.println("##################################################");
+    /// END DEBUG ONLY
+     */
     
     if (params.algorithm().equals("CRF")) {
         posTaggerTrainer = new FixedCRFTrainer(params);

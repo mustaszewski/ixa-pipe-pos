@@ -124,8 +124,8 @@ public final class InputOutputUtils {
         throw new TerminateToolException(1, "Training parameters file '"
             + paramFile + "' is invalid!");
       }*/
-      
-      if (!TrainerFactory.isValid(params.getSettings()) && !(params.algorithm().equals("MaxentMM") || params.algorithm().equals("MEMM") || params.algorithm().equals("CRF"))) {
+      // added check for ClusterFeatures
+      if (!TrainerFactory.isValid(params.getSettings()) && !(params.algorithm().equals("ClusterFeatures") || params.algorithm().equals("CRF"))) {
           throw new TerminateToolException(1, "Training parameters file '"
               + paramFile + "' is invalid!");
         }

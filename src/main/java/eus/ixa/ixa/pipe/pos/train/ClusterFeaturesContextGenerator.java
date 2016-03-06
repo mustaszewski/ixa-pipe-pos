@@ -15,16 +15,20 @@
  */
 package eus.ixa.ixa.pipe.pos.train;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import opennlp.tools.dictionary.Dictionary;
 import opennlp.tools.postag.POSContextGenerator;
 import opennlp.tools.util.Cache;
 import opennlp.tools.util.StringList;
+
+//import eus.ixa.ixa.pipe.nerc.dict.ClarkCluster;
+import java.io.FileWriter; // DEBUG ONLY
+import java.io.IOException; //DEBUG ONLY
+
 
 /**
  * An improved context generator for the POS Tagger. This baseline generator
@@ -35,7 +39,7 @@ import opennlp.tools.util.StringList;
  * @author ragerri
  * @version 2014-07-08
  */
-public class BaselineContextGenerator implements POSContextGenerator {
+public class ClusterFeaturesContextGenerator implements POSContextGenerator {
 
   /**
    * The ending string.
@@ -77,6 +81,13 @@ public class BaselineContextGenerator implements POSContextGenerator {
    * The dictionary ngrams.
    */
   private final String[] dictGram;
+  
+  static ClarkCluster clarkCluster;
+  
+  /**
+   * The Clark Class of the Token
+   */
+  //private Map<String, String> clarkAttributes;
 
   /**
    * Initializes the current instance.
@@ -84,7 +95,7 @@ public class BaselineContextGenerator implements POSContextGenerator {
    * @param aDict
    *          the dictionary
    */
-  public BaselineContextGenerator(final Dictionary aDict) {
+  public ClusterFeaturesContextGenerator(final Dictionary aDict) {
     this(0, aDict);
   }
 
@@ -96,13 +107,26 @@ public class BaselineContextGenerator implements POSContextGenerator {
    * @param aDict
    *          the dictionary
    */
-  public BaselineContextGenerator(final int cacheSize, final Dictionary aDict) {
+  
+  public ClusterFeaturesContextGenerator(final int cacheSize, final Dictionary aDict) {
     this.dict = aDict;
     this.dictGram = new String[1];
+    //this.clarkCluster = null; // NEW
     if (cacheSize > 0) {
       this.contextsCache = new Cache(cacheSize);
     }
   }
+  /*
+  public ClusterFeaturesContextGenerator(final int cacheSize, final Dictionary aDict, final ClarkCluster ccDictionary) {
+	    this.dict = aDict;
+	    this.dictGram = new String[1];
+	    this.clarkCluster = ccDictionary;
+	    System.out.println("\nclarkCluster in ContextGenerator:\t"+this.clarkCluster+"\n");
+	    if (cacheSize > 0) {
+	      this.contextsCache = new Cache(cacheSize);
+	    }
+	  }
+  */
 
   /**
    * Obtain prefixes for each token.
@@ -133,6 +157,27 @@ public class BaselineContextGenerator implements POSContextGenerator {
     }
     return suffs;
   }
+  
+  /**
+   * Obtain Clark Cluster Number for each token
+   * 
+   */
+  protected static String getWordClass(String token) {
+	  String clarkClass = clarkCluster.lookupToken(token);
+	  if (clarkClass == null) {
+		  clarkClass = "noclarkclass";
+	  }
+	  return clarkClass;
+  }
+  
+  /*
+  public String getWordClass(String token) {
+	    String clarkClass = clarkCluster.lookupToken(token);
+	    if (clarkClass == null) {
+	      clarkClass = unknownClarkClass;
+	    }
+	    return clarkClass;
+	  }*/
 
   /*
    * (non-Javadoc)
@@ -220,6 +265,14 @@ public class BaselineContextGenerator implements POSContextGenerator {
       for (final String pref : prefs) {
         featureList.add("pre=" + pref);
       }
+      
+      // NEW: Get Clark Cluster Class for current Token
+      String clarkClass = getWordClass(lex.toLowerCase());
+      //String clarkClass = "zero";
+      //featureList.add(clarkAttributes.get("dict") + "=" + clarkClass);
+      featureList.add("clark=" + clarkClass);
+      
+      
       // see if the word has any special characters
       if (lex.indexOf('-') != -1) {
         featureList.add("h");
@@ -267,7 +320,7 @@ public class BaselineContextGenerator implements POSContextGenerator {
     
     // START DEBUG ONLY
 	try {
-		FileWriter writer = new FileWriter("DebugBaselineContext.txt", true);
+		FileWriter writer = new FileWriter("DebugClusterFeatureContext.txt", true);
 		writer.write("Feature List\t"+featureList.toString()+"\n");
 		if (tokens != null) {
 			writer.write("Tokens:\t");

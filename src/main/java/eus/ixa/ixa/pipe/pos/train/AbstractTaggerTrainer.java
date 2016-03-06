@@ -16,10 +16,12 @@
 package eus.ixa.ixa.pipe.pos.train;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import eus.ixa.ixa.pipe.pos.MorphoSampleStream;
-
+import eus.ixa.ixa.pipe.pos.train.ClarkCluster.ClarkClusterSerializer;
 import opennlp.tools.cmdline.TerminateToolException;
 import opennlp.tools.dictionary.Dictionary;
 import opennlp.tools.postag.MutableTagDictionary;
@@ -148,6 +150,29 @@ public abstract class AbstractTaggerTrainer implements TaggerTrainer {
       }
     }
   }
+  
+  ////////////////////////////////
+  
+  /**
+   * Create a clark cluster dictionary with the dictionary contained in the clarkPath.
+   * 
+   * @param clarkPath
+   *          the string pointing to the clark cluster dictionary
+   */
+  protected final ClarkCluster createClarkClusterDictionary(final String clarkPath) {
+	ClarkCluster clark = null;
+    if (!clarkPath.equalsIgnoreCase(Flags.DEFAULT_CLARK_PATH)) {
+      try {
+    	  clark = new ClarkCluster(new FileInputStream(clarkPath));
+      } catch (final IOException e) {
+        throw new TerminateToolException(-1,
+            "IO error while loading POS Dictionary: " + e.getMessage(), e);
+      }
+    }
+    return clark;
+  }
+  
+  ////////////////////////////////
 
   /**
    * Automatically create a tag dictionary from training data.
